@@ -2,523 +2,251 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cash Handover • Cute & Minimal</title>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Handover Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --bg: #faf9f6;
-            --card: #ffffff;
-            --accent: #a5b4fc; /* Soft Lavender */
-            --success: #a7f3d0; /* Mint */
-            --danger: #fecaca; /* Peach/Pink */
-            --text: #4b5563;
-            --text-light: #9ca3af;
-            --radius: 24px;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-        }
-
-        * {
-            box-sizing: border-box;
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
             margin: 0;
-            padding: 0;
-            font-family: 'Outfit', sans-serif;
-            -webkit-tap-highlight-color: transparent;
         }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 850px;
-        }
-
-        /* --- Header --- */
-        header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .header-actions {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        /* --- Buttons --- */
-        .btn {
-            border: none;
-            padding: 10px 18px;
-            border-radius: 14px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: transform 0.2s, opacity 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn:active { transform: scale(0.95); }
-        .btn-primary { background: var(--accent); color: white; }
-        .btn-ghost { background: #f3f4f6; color: var(--text-light); }
-        .btn-danger { background: var(--danger); color: #991b1b; }
-
-        /* --- Dashboard Grid --- */
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-
-        @media (min-width: 768px) {
-            .grid { grid-template-columns: 1fr 1fr; }
-        }
-
-        /* --- Cards --- */
         .card {
-            background: var(--card);
-            border-radius: var(--radius);
-            padding: 24px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0,0,0,0.02);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
+        .card:focus-within {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
-
-        .card-header h2 {
-            font-size: 0.9rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-light);
-        }
-
-        .icon-circle {
-            width: 32px;
-            height: 32px;
-            background: #f8fafc;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-        }
-
-        /* --- Inputs --- */
-        .input-group { margin-bottom: 14px; }
-        .input-group label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-light);
-            margin-bottom: 4px;
-            display: block;
-        }
-
-        .input-wrapper { position: relative; }
-        input {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 14px;
-            border: 2px solid #f3f4f6;
-            background: #fdfdfd;
-            font-size: 0.9rem;
-            font-weight: 500;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        input:focus { border-color: var(--accent); }
-
-        .input-suffix {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--text-light);
-        }
-
-        .math-hint {
-            font-size: 0.75rem;
-            color: var(--accent);
-            margin-top: 4px;
-            font-weight: 600;
-            min-height: 1em;
-        }
-
-        .denom-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-        }
-
-        /* --- Result Section --- */
-        .summary-card {
-            text-align: center;
-            padding: 24px;
-            transition: background 0.3s;
-        }
-
-        .result-val {
-            font-size: 2.2rem;
-            font-weight: 800;
-            margin: 8px 0;
-            letter-spacing: -1px;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            background: #f3f4f6;
-        }
-
-        .breakdown {
-            margin-top: 18px;
-            border-top: 1px dashed #eee;
-            padding-top: 14px;
-        }
-
-        .item {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            margin-bottom: 6px;
-            color: var(--text-light);
-        }
-
-        .item.bold { font-weight: 700; color: var(--text); font-size: 1rem; margin-top: 10px; }
-
-        .cash-total-preview {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px dashed #f1f5f9;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .preview-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .preview-row.grand {
-            color: var(--accent);
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-
-        /* --- States --- */
-        .balanced { background: #f0f9ff; }
-        .excess { background: #f0fdf4; }
-        .short { background: #fff1f2; }
-
-        /* --- Custom Modal --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(4px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .modal-card {
-            background: white;
-            padding: 24px;
-            border-radius: 28px;
-            width: 100%;
-            max-width: 320px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes pop {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .modal-card h3 { margin-bottom: 8px; font-weight: 700; }
-        .modal-card p { font-size: 0.9rem; color: var(--text-light); margin-bottom: 20px; }
-        .modal-btns { display: flex; gap: 8px; }
-        .modal-btns .btn { flex: 1; justify-content: center; }
-
-        /* --- Print --- */
-        @media print {
-            .no-print, .modal-overlay, .header-actions { display: none !important; }
-            body { padding: 0; background: white; }
-            .container { max-width: 100%; }
-            .card { box-shadow: none; border: 1px solid #eee; margin-bottom: 10px; }
-            .grid { display: block; }
-            .card { break-inside: avoid; }
-        }
-
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 min-h-screen text-slate-900 font-sans">
 
-    <div class="container">
-        <header>
-            <h1><i data-lucide="sparkles" size="20" fill="#a5b4fc"></i> Handover</h1>
-            <div class="header-actions no-print">
-                <button class="btn btn-primary" id="printBtn"><i data-lucide="printer" size="14"></i> Print</button>
-                <button class="btn btn-ghost" id="resetBtn"><i data-lucide="refresh-cw" size="14"></i> Reset</button>
-            </div>
+    <div class="max-w-xl mx-auto px-4 py-8 md:py-12">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold text-slate-800 tracking-tight">Handover Assistant</h1>
+            <p class="text-slate-500 mt-2">Yesterday's Cash Reconciliation Tool</p>
         </header>
 
-        <div class="grid">
-            <!-- Entry Side -->
-            <div>
-                <section class="card" style="margin-bottom: 20px;">
-                    <div class="card-header">
-                        <div class="icon-circle"><i data-lucide="tag" size="16"></i></div>
-                        <h2>Reference</h2>
-                    </div>
-                    <div class="input-group">
-                        <label>Last Invoice</label>
-                        <input type="text" id="invoiceNum" placeholder="Ref #">
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <div class="input-group">
-                            <label>Wallet</label>
-                            <input type="number" id="walletAmt" placeholder="0">
-                        </div>
-                        <div class="input-group">
-                            <label>Card (CC)</label>
-                            <input type="number" id="ccAmt" placeholder="0">
-                        </div>
-                    </div>
-                </section>
+        <main class="space-y-6">
+            
+            <!-- Section 1: Core Details -->
+            <section class="card bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div class="flex items-center gap-2 mb-4 text-blue-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <h2 class="font-bold text-lg">Handover & Invoice</h2>
+                </div>
 
-                <section class="card">
-                    <div class="card-header">
-                        <div class="icon-circle"><i data-lucide="banknote" size="16"></i></div>
-                        <h2>Cash Count</h2>
-                    </div>
-                    <div class="denom-grid">
-                        <div class="input-group"><label>500</label><div class="input-wrapper"><input type="number" class="denom-input" data-val="500" placeholder="0"></div></div>
-                        <div class="input-group"><label>200</label><div class="input-wrapper"><input type="number" class="denom-input" data-val="200" placeholder="0"></div></div>
-                        <div class="input-group"><label>100</label><div class="input-wrapper"><input type="number" class="denom-input" data-val="100" placeholder="0"></div></div>
-                        <div class="input-group"><label>50</label><div class="input-wrapper"><input type="number" class="denom-input" data-val="50" placeholder="0"></div></div>
-                        <div class="input-group"><label>20</label><div class="input-wrapper"><input type="number" class="denom-input" data-val="20" placeholder="0"></div></div>
-                        <div class="input-group"><label>10</label><div class="input-wrapper"><input type="number" class="denom-input" data-val="10" placeholder="0"></div></div>
-                    </div>
-                    <div class="input-group">
-                        <label>Loose Coins</label>
-                        <input type="number" id="coinsAmt" placeholder="0">
-                    </div>
-                    <div class="cash-total-preview">
-                        <div class="preview-row">
-                            <span>Total Physical Cash</span>
-                            <span id="cashCountPreview">₹0.00</span>
-                        </div>
-                        <div class="preview-row grand">
-                            <span>Grand Total (+CC & Wallet)</span>
-                            <span id="grandTotalPreview">₹0.00</span>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Total Handover Cash (Physical)</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium">₹</span>
+                            <input type="number" id="handoverCash" placeholder="0.00" class="w-full pl-8 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-lg font-semibold">
                         </div>
                     </div>
-                </section>
-            </div>
 
-            <!-- Summary Side -->
-            <div>
-                <section class="card" style="margin-bottom: 20px;">
-                    <div class="card-header">
-                        <div class="icon-circle"><i data-lucide="database" size="16"></i></div>
-                        <h2>System</h2>
-                    </div>
-                    <div class="input-group">
-                        <label>Net Sale</label>
-                        <input type="number" id="sysNetSale" class="sys-input" placeholder="0">
-                    </div>
-                    <div class="input-group">
-                        <label>Yesterday (-)</label>
-                        <input type="text" id="sysYesterday" class="sys-input" placeholder="Math allowed">
-                        <div id="yesterdayHint" class="math-hint"></div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <div class="input-group">
-                            <label>Returns (-)</label>
-                            <input type="number" id="sysReturns" class="sys-input" placeholder="0">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Invoice Number</label>
+                            <input type="text" id="invoiceNo" placeholder="INV-001" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                         </div>
-                        <div class="input-group">
-                            <label>Today (+)</label>
-                            <input type="number" id="sysToday" class="sys-input" placeholder="0">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Invoice Time (24h)</label>
+                            <input type="time" id="invoiceTime" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                         </div>
                     </div>
-                    <div class="input-group">
-                        <label>Memberships (Qty)</label>
-                        <div class="input-wrapper">
-                            <input type="number" id="sysMembers" class="sys-input" placeholder="Qty">
-                            <span class="input-suffix">x99</span>
+                </div>
+            </section>
+
+            <!-- Section 2: Calculation Section -->
+            <section class="card bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <div class="flex items-center gap-2 mb-4 text-emerald-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                    <h2 class="font-bold text-lg">Sales Reconciliation</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">
+                            Total Amount (Till <span id="labelInvoiceNo" class="text-blue-600 font-bold">Inv. No</span>)
+                        </label>
+                        <input type="number" id="totalAmountTillInv" placeholder="0.00" class="calc-input w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-red-600 mb-1">
+                                Sales Return (- <span class="labelTime text-slate-400 font-normal"></span>)
+                            </label>
+                            <input type="number" id="salesReturn" placeholder="Subtract amount" class="calc-input w-full px-4 py-3 bg-red-50 border border-red-100 rounded-xl focus:ring-2 focus:ring-red-500 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-emerald-600 mb-1">
+                                DSO Received (+ <span class="labelTime text-slate-400 font-normal"></span>)
+                            </label>
+                            <input type="number" id="dsoReceived" placeholder="Add amount" class="calc-input w-full px-4 py-3 bg-emerald-50 border border-emerald-100 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
                         </div>
                     </div>
-                </section>
 
-                <section id="summaryCard" class="card summary-card">
-                    <span id="resDiffLabel" style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Difference</span>
-                    <div id="resDiffValue" class="result-val">₹0.00</div>
-                    <div id="resBadge" class="badge">Balanced</div>
-
-                    <div class="breakdown">
-                        <div class="item"><span>Actual Handover</span><span id="resPhysical">₹0.00</span></div>
-                        <div class="item"><span>System Target</span><span id="resSystem">₹0.00</span></div>
-                        <div class="item bold"><span>Ref: </span><span id="invoiceDisplay">None</span></div>
+                    <div>
+                        <label class="block text-sm font-medium text-indigo-600 mb-1">
+                            Coupon/memberships count (+ <span class="labelTime text-slate-400 font-normal"></span>)
+                        </label>
+                        <div class="relative">
+                            <input type="number" id="couponCount" placeholder="Enter quantity" class="calc-input w-full px-4 py-3 bg-indigo-50 border border-indigo-100 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+                            <div class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-indigo-400 pointer-events-none">
+                                x ₹99
+                            </div>
+                        </div>
+                        <p id="couponCalcPreview" class="text-[10px] mt-1 text-slate-400 italic px-1">Total added: ₹0.00</p>
                     </div>
-                </section>
-            </div>
-        </div>
-    </div>
+                </div>
+            </section>
 
-    <!-- Custom Modal -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-card">
-            <h3>Reset?</h3>
-            <p>This will clear all entries. Are you sure you want to start fresh?</p>
-            <div class="modal-btns">
-                <button class="btn btn-ghost" id="closeModal">Cancel</button>
-                <button class="btn btn-danger" id="confirmReset">Reset</button>
-            </div>
-        </div>
+            <!-- Results Section -->
+            <section id="resultCard" class="bg-slate-800 text-white p-8 rounded-2xl shadow-xl transition-all">
+                <div class="flex flex-col items-center justify-center text-center">
+                    <div class="grid grid-cols-2 w-full gap-4 mb-6 pb-6 border-b border-slate-700">
+                        <div>
+                            <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">Calculated Total</p>
+                            <p id="finalCalculated" class="text-xl font-bold">₹0.00</p>
+                        </div>
+                        <div>
+                            <p class="text-xs uppercase tracking-widest text-slate-400 mb-1">Handover Cash</p>
+                            <p id="finalHandover" class="text-xl font-bold">₹0.00</p>
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-slate-400 mb-1">Difference Analysis</p>
+                    <h3 id="diffValue" class="text-4xl font-black mb-2">₹0.00</h3>
+                    <p id="statusText" class="px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-700 text-slate-300">
+                        No Data Entered
+                    </p>
+                </div>
+            </section>
+
+            <button onclick="resetForm()" class="w-full py-4 text-slate-400 hover:text-slate-600 transition-colors font-medium flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Clear all fields
+            </button>
+        </main>
+        
+        <footer class="mt-12 text-center text-slate-400 text-sm">
+            <p>© <span id="year"></span> Cash Handover Calculator • Mobile Friendly</p>
+        </footer>
     </div>
 
     <script>
-        lucide.createIcons();
+        document.getElementById('year').textContent = new Date().getFullYear();
 
-        const allInputs = document.querySelectorAll('input');
-        const denomInputs = document.querySelectorAll('.denom-input');
-        const modal = document.getElementById('modalOverlay');
+        const inputs = document.querySelectorAll('input');
+        const invoiceNoInput = document.getElementById('invoiceNo');
+        const invoiceTimeInput = document.getElementById('invoiceTime');
+        const handoverInput = document.getElementById('handoverCash');
+        const amountTillInvInput = document.getElementById('totalAmountTillInv');
+        const salesReturnInput = document.getElementById('salesReturn');
+        const dsoInput = document.getElementById('dsoReceived');
+        const couponInput = document.getElementById('couponCount');
+        const couponPreview = document.getElementById('couponCalcPreview');
 
-        function solveMath(str) {
-            try {
-                if (!str) return 0;
-                // Basic math solver for Yesterday Orders
-                const cleanStr = str.replace(/[^-+*/().0-9]/g, '');
-                return eval(cleanStr) || 0;
-            } catch { return 0; }
+        const labelInvoiceNo = document.getElementById('labelInvoiceNo');
+        const labelTimeSpans = document.querySelectorAll('.labelTime');
+
+        const finalCalculatedDisplay = document.getElementById('finalCalculated');
+        const finalHandoverDisplay = document.getElementById('finalHandover');
+        const diffValueDisplay = document.getElementById('diffValue');
+        const statusText = document.getElementById('statusText');
+        const resultCard = document.getElementById('resultCard');
+
+        function updateLabels() {
+            // Update Invoice Number label
+            const invNo = invoiceNoInput.value.trim();
+            labelInvoiceNo.textContent = invNo || "Inv. No";
+            
+            // Update Time labels in 24-hour format
+            const timeVal = invoiceTimeInput.value;
+            let formattedTime = "";
+            if (timeVal) {
+                // Keeping it as 24-hour format (HH:mm) as requested
+                formattedTime = `till ${timeVal}`;
+            }
+            
+            labelTimeSpans.forEach(span => {
+                span.textContent = formattedTime;
+            });
         }
 
         function calculate() {
-            let cashTotal = 0;
-            denomInputs.forEach(input => {
-                const val = parseInt(input.getAttribute('data-val'));
-                cashTotal += (val * (parseFloat(input.value) || 0));
-            });
-            cashTotal += (parseFloat(document.getElementById('coinsAmt').value) || 0);
+            updateLabels();
+
+            const handover = parseFloat(handoverInput.value) || 0;
+            const baseAmount = parseFloat(amountTillInvInput.value) || 0;
+            const returns = parseFloat(salesReturnInput.value) || 0;
+            const dso = parseFloat(dsoInput.value) || 0;
             
-            // Sub-total UI
-            document.getElementById('cashCountPreview').innerText = `₹${cashTotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
-
-            const walletVal = parseFloat(document.getElementById('walletAmt').value) || 0;
-            const ccVal = parseFloat(document.getElementById('ccAmt').value) || 0;
+            // Membership count multiplied by 99
+            const count = parseInt(couponInput.value) || 0;
+            const couponTotal = count * 99;
             
-            // Grand total UI
-            const physicalTotal = cashTotal + walletVal + ccVal;
-            document.getElementById('grandTotalPreview').innerText = `₹${physicalTotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+            // Update preview text
+            couponPreview.textContent = `Total added: ₹${couponTotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
 
-            const netSale = parseFloat(document.getElementById('sysNetSale').value) || 0;
-            const returns = parseFloat(document.getElementById('sysReturns').value) || 0;
-            const today = parseFloat(document.getElementById('sysToday').value) || 0;
-            const memberQty = parseFloat(document.getElementById('sysMembers').value) || 0;
-            
-            const yestStr = document.getElementById('sysYesterday').value;
-            const yestVal = solveMath(yestStr);
-            document.getElementById('yesterdayHint').innerText = (yestStr && yestStr.match(/[+*/-]/)) ? `Total: ₹${yestVal.toLocaleString('en-IN', {minimumFractionDigits: 2})}` : "";
+            // Logic: (Total Amount till inv - sales return) + DSO + (Count * 99)
+            const systemTotal = (baseAmount - returns) + dso + couponTotal;
+            const diff = handover - systemTotal;
 
-            const systemTarget = netSale - yestVal - returns + today + (memberQty * 99);
-            const diff = physicalTotal - systemTarget;
+            // Update displays
+            finalCalculatedDisplay.textContent = `₹${systemTotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+            finalHandoverDisplay.textContent = `₹${handover.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+            diffValueDisplay.textContent = `${diff >= 0 ? '' : '-'}₹${Math.abs(diff).toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
 
-            document.getElementById('resPhysical').innerText = `₹${physicalTotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
-            document.getElementById('resSystem').innerText = `₹${systemTarget.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
-            document.getElementById('resDiffValue').innerText = `₹${Math.abs(diff).toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
-            document.getElementById('invoiceDisplay').innerText = document.getElementById('invoiceNum').value || 'None';
+            updateVisuals(diff, handover === 0 && baseAmount === 0);
+        }
 
-            const card = document.getElementById('summaryCard');
-            const badge = document.getElementById('resBadge');
-            
-            card.className = 'card summary-card';
+        function updateVisuals(diff, isEmpty) {
+            if (isEmpty) {
+                statusText.textContent = "No Data Entered";
+                statusText.className = "px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-700 text-slate-300";
+                resultCard.className = "bg-slate-800 text-white p-8 rounded-2xl shadow-xl transition-all";
+                return;
+            }
+
             if (Math.abs(diff) < 0.01) {
-                card.classList.add('balanced');
-                badge.innerText = "Balanced ✨";
+                statusText.textContent = "Perfect Match";
+                statusText.className = "px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-emerald-500/20 text-emerald-400";
+                resultCard.className = "bg-emerald-900 text-white p-8 rounded-2xl shadow-xl border-4 border-emerald-500 transition-all";
             } else if (diff > 0) {
-                card.classList.add('excess');
-                badge.innerText = "Excess (+)";
+                statusText.textContent = "Cash Overage (Extra)";
+                statusText.className = "px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-blue-500/20 text-blue-400";
+                resultCard.className = "bg-slate-800 text-white p-8 rounded-2xl shadow-xl transition-all";
             } else {
-                card.classList.add('short');
-                badge.innerText = "Short (-)";
+                statusText.textContent = "Cash Shortage (Missing)";
+                statusText.className = "px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-red-500/20 text-red-400";
+                resultCard.className = "bg-red-950 text-white p-8 rounded-2xl shadow-xl border-4 border-red-600 transition-all";
             }
         }
 
-        // --- Event Listeners ---
-        allInputs.forEach(i => i.addEventListener('input', calculate));
-
-        // Print functionality
-        document.getElementById('printBtn').addEventListener('click', () => {
-            window.print();
-        });
-
-        // Modal triggers
-        document.getElementById('resetBtn').addEventListener('click', () => {
-            modal.style.display = 'flex';
-        });
-
-        document.getElementById('closeModal').addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-
-        document.getElementById('confirmReset').addEventListener('click', () => {
-            allInputs.forEach(i => i.value = '');
+        function resetForm() {
+            inputs.forEach(input => input.value = '');
+            couponPreview.textContent = "Total added: ₹0.00";
             calculate();
-            modal.style.display = 'none';
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener('input', calculate);
         });
 
-        // Close modal on outside click
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) modal.style.display = 'none';
-        });
-
-        // Initial run
+        // Initialize
         calculate();
     </script>
 </body>
 </html>
+
