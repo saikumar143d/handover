@@ -68,13 +68,13 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                     </svg>
-                    <h2 class="font-bold text-lg">Sales Reconciliation</h2>
+                    <h2 class="font-bold text-lg">DSR amounts</h2>
                 </div>
 
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1">
-                            Total Amount (Till <span id="labelInvoiceNo" class="text-blue-600 font-bold">Inv. No</span>)
+                            Total Amount (upto inv <span id="labelInvoiceNo" class="text-blue-600 font-bold">Inv. No</span>)
                         </label>
                         <input type="number" id="totalAmountTillInv" placeholder="0.00" class="calc-input w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
                     </div>
@@ -115,14 +115,14 @@
                     </div>
 
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-1">
-                        <p id="couponCalcPreview" class="text-[10px] text-slate-500 flex justify-between">
+                        <div id="couponCalcPreview" class="text-[10px] text-slate-500 flex justify-between">
                             <span>Membership Value (Count × 99):</span>
                             <span class="font-mono">+ ₹0.00</span>
-                        </p>
-                        <p id="omsCalcPreview" class="text-[10px] text-slate-500 flex justify-between">
+                        </div>
+                        <div id="omsCalcPreview" class="text-[10px] text-slate-500 flex justify-between">
                             <span>Online Order Deduction:</span>
                             <span class="font-mono text-orange-600">- ₹0.00</span>
-                        </p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -189,7 +189,6 @@
 
         function evaluateMath(str) {
             if (!str) return 0;
-            // Sanitizing: only allow numbers, decimals, and plus signs
             const sanitized = str.replace(/[^0-9+.]/g, '');
             if (!sanitized) return 0;
             
@@ -206,7 +205,7 @@
             const timeVal = invoiceTimeInput.value;
             let formattedTime = "";
             if (timeVal) {
-                formattedTime = `till ${timeVal}`;
+                formattedTime = `upto ${timeVal}`;
             }
             
             labelTimeSpans.forEach(span => {
@@ -222,21 +221,17 @@
             const returns = parseFloat(salesReturnInput.value) || 0;
             const dso = parseFloat(dsoInput.value) || 0;
             
-            // Math evaluation for Online Orders
             const oms = evaluateMath(omsInput.value);
             
             const count = parseInt(couponInput.value) || 0;
             const couponTotal = count * 99;
             
-            // Update preview texts
             couponPreview.textContent = `+ ₹${couponTotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
             omsPreview.textContent = `- ₹${oms.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
 
-            // Logic: (Total Amount till inv - sales return - OMS) + DSO + (Count * 99)
             const systemTotal = (baseAmount - returns - oms) + dso + couponTotal;
             const diff = handover - systemTotal;
 
-            // Update displays
             finalCalculatedDisplay.textContent = `₹${systemTotal.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
             finalHandoverDisplay.textContent = `₹${handover.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
             diffValueDisplay.textContent = `${diff >= 0 ? '' : '-'}₹${Math.abs(diff).toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
@@ -276,7 +271,6 @@
             input.addEventListener('input', calculate);
         });
 
-        // Initialize
         calculate();
     </script>
 </body>
